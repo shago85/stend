@@ -63,6 +63,7 @@
         // Получаем данные, переданные ботом через WebAppData
         Telegram.WebApp.onEvent('web_app_data', (webAppData) => {
             try {
+                console.log('Received web_app_data:', webAppData);
                 const data = JSON.parse(webAppData);
                 console.log('Received data:', data); // Отладочный вывод
                 updateTable(data);
