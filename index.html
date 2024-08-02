@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои записи</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Мои записи за последние 5 недель</h2>
+
+    <table id="appointment-table">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Время</th>
+                <th>Мастер 1</th>
+                <th>Мастер 2</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Динамически заполняемая таблица -->
+        </tbody>
+    </table>
+
+    <script>
+        function updateTable(data) {
+            const tableBody = document.getElementById('appointment-table').getElementsByTagName('tbody')[0];
+
+            Object.keys(data).forEach(date => {
+                const rows = data[date] || [];
+                rows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${date}</td><td>${row.time}</td><td>${row.master1}</td><td>${row.master2}</td>`;
+                    tableBody.appendChild(tr);
+                });
+            });
+        }
+
+        // Получаем данные, переданные ботом через WebAppData
+        Telegram.WebApp.onEvent('web_app_data', (webAppData) => {
+            const data = JSON.parse(webAppData);
+            updateTable(data);
+        });
+
+        // Инициализация WebApp
+        Telegram.WebApp.ready();
+    </script>
+</body>
+</html>
