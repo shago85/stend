@@ -52,17 +52,11 @@
 
             Object.keys(data).forEach(date => {
                 const rows = data[date] || [];
-                if (rows.length === 0) {
+                rows.forEach(row => {
                     const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>${date}</td><td colspan="3">Записи отсутствуют</td>`;
+                    tr.innerHTML = `<td>${date}</td><td>${row.time}</td><td>${row.master1}</td><td>${row.master2}</td>`;
                     tableBody.appendChild(tr);
-                } else {
-                    rows.forEach(row => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `<td>${date}</td><td>${row.time}</td><td>${row.master1}</td><td>${row.master2}</td>`;
-                        tableBody.appendChild(tr);
-                    });
-                }
+                });
             });
         }
 
@@ -70,6 +64,7 @@
         Telegram.WebApp.onEvent('web_app_data', (webAppData) => {
             try {
                 const data = JSON.parse(webAppData);
+                console.log('Received data:', data); // Отладочный вывод
                 updateTable(data);
             } catch (error) {
                 console.error('Ошибка обработки данных:', error);
