@@ -41,23 +41,39 @@
     <script>
         function updateTable(data) {
             const tableBody = document.getElementById('appointment-table').getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = ''; // Очистка таблицы перед добавлением новых данных
-            
+            tableBody.innerHTML = ''; // Очищаем таблицу перед обновлением
+
+            if (Object.keys(data).length === 0) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="4">Записи отсутствуют</td>`;
+                tableBody.appendChild(tr);
+                return;
+            }
+
             Object.keys(data).forEach(date => {
                 const rows = data[date] || [];
-                rows.forEach(row => {
+                if (rows.length === 0) {
                     const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>${date}</td><td>${row.time}</td><td>${row.master1}</td><td>${row.master2}</td>`;
+                    tr.innerHTML = `<td>${date}</td><td colspan="3">Записи отсутствуют</td>`;
                     tableBody.appendChild(tr);
-                });
+                } else {
+                    rows.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td>${date}</td><td>${row.time}</td><td>${row.master1}</td><td>${row.master2}</td>`;
+                        tableBody.appendChild(tr);
+                    });
+                }
             });
         }
 
         // Получаем данные, переданные ботом через WebAppData
         Telegram.WebApp.onEvent('web_app_data', (webAppData) => {
-            console.log('Received WebApp data:', webAppData); // Добавляем эту строку для отладки
-            const data = JSON.parse(webAppData);
-            updateTable(data);
+            try {
+                const data = JSON.parse(webAppData);
+                updateTable(data);
+            } catch (error) {
+                console.error('Ошибка обработки данных:', error);
+            }
         });
 
         // Инициализация WebApp
