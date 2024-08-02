@@ -41,7 +41,8 @@
     <script>
         function updateTable(data) {
             const tableBody = document.getElementById('appointment-table').getElementsByTagName('tbody')[0];
-
+            tableBody.innerHTML = ''; // Очистка таблицы перед добавлением новых данных
+            
             Object.keys(data).forEach(date => {
                 const rows = data[date] || [];
                 rows.forEach(row => {
@@ -54,6 +55,7 @@
 
         // Получаем данные, переданные ботом через WebAppData
         Telegram.WebApp.onEvent('web_app_data', (webAppData) => {
+            console.log('Received WebApp data:', webAppData); // Добавляем эту строку для отладки
             const data = JSON.parse(webAppData);
             updateTable(data);
         });
